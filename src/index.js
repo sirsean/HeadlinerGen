@@ -14,7 +14,7 @@ async function summarize(text) {
       messages: [
         {
           role: 'system',
-          content: 'You are the editor of a news desk, responsible for taking the stories of the day and summarizing them into a single written paragraph. You must decide which is the most important over-arching topic of the day, from the provided news snippets. Once you decide the single best topic, describe it visually. Return only this summary, and no prelude.',
+          content: 'You are the editor of a news desk, responsible for taking the stories of the day and summarizing them into a single written paragraph. You must decide which is the most important over-arching topic of the day, from the provided news snippets. Once you decide the single best topic, describe it visually, from the perspective of an artist at the scene. Return only this summary, and no prelude.',
         },
         {
           role: 'user',
@@ -49,7 +49,7 @@ async function main() {
   const id = uuid.v4();
   const summary = await fetchNews().then(summarizeNews);
   console.log(summary);
-  const img = await new StableDiffusionLightningImageGenerator().generate(`Generate an illustration suitable to be placed in a news briefing, abstract, with no text: ${summary}`);
+  const img = await new StableDiffusionLightningImageGenerator().generate(`Generate an illustration suitable to be placed in a news briefing, abstract, with no text or maps or charts; the image should be an artist's depiction of what the event looks like at the scene: ${summary}`);
   //await writeFile('./tmp/generated_image.png', img);
 
   const metadata = {
@@ -57,7 +57,7 @@ async function main() {
     summary,
     at: new Date(),
   };
-  
+
   await uploadImage(id, img);
   await imgToThumbnail(id);
   await uploadMetadata(id, metadata);
